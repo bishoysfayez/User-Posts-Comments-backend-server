@@ -24,7 +24,7 @@ Comments has (content, createdBy=> ref to user model)
 5- Delete Post  (user must be logged in)(Get user ID from token) (post owner only)
 
 
-APIS CRUD Operation For Comment module
+## APIS CRUD Operation For Comment module
 1- Add Comment  (user must be logged in)(Get user ID from token)
 2- Update comment (user must be logged in)(Get user ID from token) (comment owner only)
 3- Delete comment (user must be logged in)(Get user ID from token) (comment owner and post owner)
