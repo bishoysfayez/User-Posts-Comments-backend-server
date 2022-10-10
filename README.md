@@ -2,7 +2,7 @@
 Backend server to manage users and authentication for posts and comments - please, refere to readme.md
 
 Exam one
-## Using Express ,mongodb
+## Using Express ,mongodb, mongoose
 create express application with three modules (User && Posts && Comments)
 User has (name ,email,password "hash password" ,age ,phone)
 posts has (title ,content,createdBy=> ref to user model , comments =>Array of ID ref to comment model )
