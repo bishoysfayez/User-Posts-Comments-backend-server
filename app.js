@@ -1,7 +1,9 @@
+import * as dotenv from 'dotenv'
+dotenv.config();
+
 import express from 'express';
 import * as allRoutes from './modules/index.route.js';
 import connection from './DB/connection.js';
-
 
 const app = express();
 
