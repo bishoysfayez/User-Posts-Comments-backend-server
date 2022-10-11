@@ -4,8 +4,8 @@ import { auth } from "../../middleware/auth.js";
 
 const postsRouter = Router();
 
-postsRouter.post('/addpost/', auth(),addPost);
-postsRouter.post('/updatepost',auth(), updatePost);
+postsRouter.post('/addpost', auth(),addPost);
+postsRouter.post('/updatepost/:postID',auth(), updatePost);
 postsRouter.get('/getallposts',auth(),getAllPosts);
 postsRouter.get('/getuserposts',auth(),getUserPosts);
 postsRouter.get('/deleteuserpost/:postID',auth(),deleteUserPosts);

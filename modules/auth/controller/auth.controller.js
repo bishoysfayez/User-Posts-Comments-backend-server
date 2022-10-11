@@ -1,4 +1,3 @@
-import userModel from "../../../DB/models/user.model.js";
 import postsModel from "../../../DB/models/posts.model.js";
 import commentsModel from "../../../DB/models/comments.model.js";
 import bcryptjs from "bcryptjs";
@@ -12,12 +11,12 @@ export const signUp = async (req, res) => {
     // hash password
 
     // check if user exist
-    const user = await userModel.findOne({ email });
+    const user = await usersModel.findOne({ email });
     if (user) {
         res.json({ message: "already registered email" });
     } else {
         const hashed = await bcryptjs.hashSync(password, 3);
-        const savedUser = await userModel({
+        const savedUser = await usersModel({
             userName,
             email,
             password: hashed,
@@ -33,7 +32,7 @@ export const signUp = async (req, res) => {
 
 export const signIn = async (req, res) => {
     const { email, password } = req.body;
-    let user = await userModel.findOne({ email });
+    let user = await usersModel.findOne({ email });
     if (user) {
         // check password
         let matchPassword = await bcryptjs.compareSync(password, user.password);
@@ -51,15 +50,18 @@ export const signIn = async (req, res) => {
 // 3- change password =================
 
 export const changePassword = async (req, res) => {
-    let {oldPassword, newPassword} = req.body
+    let {oldPassword, newPassword} = req.body;
+    console.log(newPassword)
+
     // check decoded token to check user is signed in
-    let user = await userModel.findOne({ _id: req.currentID });
-    let matchPassword = await bcryptjs.compareSync(oldPassword, user.password);
+    let user = await usersModel.findOne({ _id: req.currentID });
+    let matchPassword = bcryptjs.compareSync(oldPassword, user.password);
     // check if old password matched
     if (matchPassword) {
-        let newHash = await bcryptjs.hashSync(newPassword, 3);
+        let newHash = bcryptjs.hashSync(newPassword, 3);
         // update model DB
-        let savedHash = await userModel.updateOne(
+        console.log(newHash)
+        let savedHash = await usersModel.updateOne(
             { _id: req.currentID },
             { password: newHash }
         );
@@ -73,21 +75,25 @@ export const changePassword = async (req, res) => {
 
 export const updateAccount = async (req, res) => {
     let { email, phone } = req.body;
-
-    let user = await userModel.findOne({ _id: req.currentID });
-    // update model DB
-    let updatedUser = await userModel.updateOne(
+    let user = await usersModel.findOne({ _id: req.currentID });
+    if (user){
+         // update model DB
+         let updatedUser = await usersModel.updateOne(
         { _id: req.currentID },
         { email, phone }
-    );
-    res.json({ message: "updated your data successfully" });
+        );
+        res.json({ message: "updated your data successfully" });
+    } else{
+        res.json({ message: "failed - user not found" });
+
+    }
+   
 };
 
 // 5- delete account incl. Posts and comments
 
 export const deleteAccount = async (req, res) => {
   // delete user posts
-  //console.log('req', req.currentID)
   let deletePosts = await postsModel.deleteMany({ createdBy: req.currentID });
   // get user comments and delete each comment from posts model
   let userComments = await commentsModel.find({ createdBy: req.currentID });
@@ -105,7 +111,6 @@ export const deleteAccount = async (req, res) => {
   });
   // finally delete user from users model
   let deleteUser = await usersModel.deleteOne({ _id: req.currentID });
-  //console.log('del' , req.currentID);
   // acknowldege message
   res.json({ message: "user and all his/her data deleted successfully" });
 };

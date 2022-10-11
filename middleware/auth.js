@@ -2,19 +2,19 @@ import jwt from "jsonwebtoken";
 import usersModel from '../DB/models/user.model.js'
 
 
-
 export const auth = () => {
   return async (req, res, next) => {
     try {
       const { authorization } = req.headers;
       var token = authorization.split(" ")[1];
+      console.log(token)
       if (authorization.startsWith("Bearer")) {
         const decoded = jwt.verify(token, 'bs');
         // check if token is valid
         if (decoded) {
           // check user token if logged in
           const user = await usersModel.findOne({_id: decoded.id});
-          console.log(user._id)
+          //console.log(user._id)
           if (user) {
             req.currentID = user._id;
             //console.log('from auth',req.currentID, user._id)

@@ -17,19 +17,20 @@ export const addPost = async (req, res) => {
 // 2- update Post
 
 export const updatePost = async (req, res) => {
-  let { postID, newTitle, newContent } = req.body;
+  let {postID} = req.params;
+  let { newTitle, newContent } = req.body;
   //check if user is the original post creator
   let postData = await postsModel.findOne({ _id: postID });
-  if (req.currentID == postData.createdBy) {
+
+  if (JSON.stringify(req.currentID) == JSON.stringify(postData.createdBy)) {
     const newPost = await postsModel.updateOne(
       { _id: postID },
       { title: newTitle, content: newContent }
     );
     res.json({ message: "done update post", newPost });
-  } else {
-    res.json({
-      message: "you can't update post - only post creator can update",
-    });
+  } else{
+    res.json({ message: "you can't update post - not owner" });
+
   }
 };
 
@@ -49,14 +50,14 @@ export const getUserPosts = async (req, res) => {
   } else {
     res.json({ message: "you don't have any posts yet" });
   }
-};
-
+}
 // 5 - delete User posts
 export const deleteUserPosts = async (req, res) => {
   let { postID } = req.params;
   //check if user is the original post creator
   let postData = await postsModel.findOne({ _id: postID });
-  if (req.currentID == postData.createdBy) {
+  console.log(postData)
+  if (JSON.stringify(req.currentID) == JSON.stringify(postData.createdBy)) {
     const deletePost = await postsModel.deleteOne({ _id: postID });
     res.json({ message: "done delete post", deletePost });
   } else {

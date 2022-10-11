@@ -3,11 +3,7 @@ import { signUp, signIn, changePassword,updateAccount, deleteAccount} from "./co
 import { auth } from "../../middleware/auth.js";
 
 
-
 const authRouter = Router();
-
-
-
 
 authRouter.post("/signup", signUp);
 authRouter.post("/signin", signIn);

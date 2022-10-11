@@ -32,7 +32,7 @@ export const updateComment = async (req, res) => {
   const comment = await commentsModel.findOne({ _id: commentID });
   //console.log(req.currentID)
   //check if the updater is the comment owner
-  if (req.currentID == comment.createdBy) {
+  if (JSON.stringify(req.currentID) == JSON.stringify(comment.createdBy)) {
     let updatedComment = await commentsModel.updateOne(
       { _id: commentID },
       { content }
@@ -50,9 +50,9 @@ export const deleteComment = async (req, res) => {
   let { commentID } = req.params;
 // find the comment of the user  
   const comment = await commentsModel.findOne({ _id: commentID });
-
+if(comment){
   //check if the user is the comment owner
-  if (req.currentID == comment.createdBy) {
+  if (JSON.stringify(req.currentID) == JSON.stringify(comment.createdBy)) {
     // delete from posts' comments array
 
     let commentRemovalFromPosts = await postsModel.updateOne(
@@ -75,4 +75,10 @@ export const deleteComment = async (req, res) => {
       message: "you can't delete comment - only the comment owner can delete",
     });
   }
+}else {
+  res.json({
+    message: "you can't delete comment  there is no such comment",
+  });
+}
+  
 };
